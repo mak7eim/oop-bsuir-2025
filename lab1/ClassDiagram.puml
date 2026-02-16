@@ -1,0 +1,138 @@
+@startuml sdfghj
+
+namespace domain {
+
+class Bank {
+  -id: string
+  -name: string
+  +ID(): string 
+  +Name(): string
+}
+
+class Client {
+  -id: string
+  -firstName: string
+  -lastName: string
+  -phoneNum: string
+  -isActive: bool
+  +GetID(): string
+  +GetFullName(): string
+  +IsActive(): bool
+  +DisActive()
+  +SetPhone(newPhoneNum: string)
+}
+
+class Account {
+  -number: string
+  -clientID: string
+  -currency: string
+  -balance: float64
+  +GetNumber(): string
+  +GetClientID(): string
+  +GetBalance(): float64
+  +GetCurrency(): string
+  +Deposit(money: float64)
+  +WithdrawMoney(money: float64): bool
+}
+
+class Card {
+  -cardNum: string
+  -accountNum: string
+  -expiryMonth: int
+  -expiryYear: int
+  -cvv: int
+  +GetCardNum(): string
+  +GetAccountNum(): string
+  +IsExpired(): bool
+}
+
+class Deposit {
+  -id: string
+  -clientID: string
+  -money: float64
+  -rate: float64
+  -currency: string
+  +GetID(): string
+  +CalculateInterest(): float64
+}
+
+class Loan {
+  -id: string
+  -clientID: string
+  -money: float64
+  -currency: string
+  +GetID(): string
+  +GetClientID(): int
+  +GetRemainingDebt(): float64
+  +MakePayment(payment: float64)
+}
+
+class Transaction {
+  -id: string
+  -fromAccount: string
+  -toAccount: string
+  -money: float64
+  -currency: string
+  -status: string
+  +GetID(): string
+  +GetStatus(): string
+  +GetMoney(): float64
+  +Fail()
+  +Complete()
+}
+
+class Employee {
+  -id: string
+  -fullName: string
+  -position: string
+  -employed: bool
+  +GetID(): string
+  +GetFullName(): string
+  +GetPosition(): string
+  +IsEmployed(): bool
+  +StartWork()
+  +StopWork()
+}
+
+class Branch {
+  -id: string
+  -address: string
+  -name: string
+  -phone: string
+  -opened: bool
+  +GetID(): string
+  +GetAddress(): string
+  +GetPhone(): string
+  +IsOpen(): bool
+  +UpdatePhone(newPhone: string)
+  +SetOpen()
+  +SetClose()
+}
+
+class ATM {
+  -id: string
+  -balance: float64
+  -branchID: string 
+  +GetID(): string
+  +GetBranchID(): string 
+  +GetBalance(): float64
+  +WithdrawMoney(money: float64): bool
+}
+
+}
+
+
+domain.Bank "1" -- "1..*" domain.Branch
+domain.Bank "1" -- "0..*" domain.Client
+
+domain.Client "1" -- "0..*" domain.Account 
+domain.Client "1" -- "0..*" domain.Deposit
+domain.Client "1" -- "0..*" domain.Loan 
+
+domain.Account "1" -- "0..*" domain.Card 
+domain.Account "1" -- "0..*" domain.Transaction 
+
+domain.Branch "1" -- "0..*" domain.Employee 
+domain.Branch "1" -- "0..*" domain.ATM 
+
+@enduml
