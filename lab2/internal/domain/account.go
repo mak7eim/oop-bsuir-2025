@@ -6,6 +6,7 @@ type Account struct {
 	number   string
 	currency string
 	balance  float64
+	cards    []*Card
 }
 
 func NewAccount(number string, clientID string, currency string, balance float64) *Account {
@@ -14,6 +15,7 @@ func NewAccount(number string, clientID string, currency string, balance float64
 		clientID: clientID,
 		currency: currency,
 		balance:  balance,
+		cards: []*Card{},
 	}
 }
 
@@ -44,4 +46,14 @@ func (a *Account) WithdrawMoney(money float64) bool {
 	}
 
 	return false
+}
+
+func (a *Account) GetAllCard() []*Card {
+	result := make([]*Card, len(a.cards))
+	copy(result, a.cards)
+	return result
+}
+
+func (a *Account) AddCard(card *Card) {
+	a.cards = append(a.cards, card)
 }

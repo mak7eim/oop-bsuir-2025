@@ -1,28 +1,19 @@
 package domain
 
 type Employee struct {
-	id       string
-	fullName string
+	Person
 	position string
 	employed bool
 }
 
-func NewEmployee(id, fullName, position string) *Employee {
+func NewEmployee(id, firstName, lastName, phoneNum, position string) *Employee {
 	return &Employee{
-		id:       id,
-		fullName: fullName,
+		Person: Person{id: id, lastName: lastName, firstName: firstName, phoneNum: phoneNum},
 		position: position,
 		employed: true,
 	}
 }
 
-func (e *Employee) GetID() string {
-	return e.id
-}
-
-func (e *Employee) GetFullName() string {
-	return e.fullName
-}
 
 func (e *Employee) GetPosition() string {
 	return e.position

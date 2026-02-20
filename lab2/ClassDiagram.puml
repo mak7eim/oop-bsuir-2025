@@ -1,0 +1,164 @@
+@startuml hkjkhk
+
+package domain {
+
+    interface Entity {
+        +GetID(): string
+    }
+    
+    class Person {
+        -id: string
+        -firstName: string
+        -lastName: string
+        -phoneNum: string
+        +GetID(): string
+        +GetFullName(): string
+        +GetPhoneNum(): string
+        +SetPhone(newPhoneNum: string)
+    }
+    
+    class Client {
+        -isActive: bool
+        +IsActive(): bool
+        +DisActive()
+    }
+    
+    class Employee {
+        -position: string
+        -employed: bool
+        +GetPosition(): string
+        +IsEmployed(): bool
+        +StartWork()
+        +StopWork()
+    }
+    
+    class Account {
+        -clientID: string
+        -number: string
+        -currency: string
+        -balance: float64
+        -cards: []*Card
+        +GetNumber(): string
+        +GetClientID(): string
+        +GetBalance(): float64
+        +GetCurrency(): string
+        +Deposit(money: float64)
+        +WithdrawMoney(money: float64): bool
+        +GetAllCard(): []*Card
+        +AddCard(card: Card)
+    }
+    
+    class Card {
+        -cardNum: string
+        -accountNum: string
+        -expiryMonth: int
+        -expiryYear: int
+        -cvv: int
+        +GetCardNum(): string
+        +GetAccountNum(): string
+        +IsExpired(): bool
+    }
+    
+    class Transaction {
+        -id: string
+        -fromAccount: string
+        -toAccount: string
+        -money: float64
+        -currency: string
+        -status: string
+        +GetID(): string
+        +GetMoney(): float64
+        +GetStatus(): string
+        +Complete()
+        +Fail()
+    }
+    
+    class Deposit {
+        -id: string
+        -clientID: string
+        -money: float64
+        -rate: float64
+        -currency: string
+        +GetID(): string
+        +GetClientID(): string
+        +GetBalance(): float64
+        +GetCurrency(): string
+        +CalculateInterest(): float64
+    }
+    
+    class Loan {
+        -id: string
+        -clientID: string
+        -money: float64
+        -currency: string
+        +GetID(): string
+        +GetClientID(): string
+        +GetBalance(): float64
+        +GetCurrency(): string
+        +GetRemainingDebt(): float64
+        +MakePayment(payment: float64)
+    }
+    
+    class Bank {
+        -id: string
+        -name: string
+        -branches: []*Branch
+        +GetID(): string
+        +GetName(): string
+        +GetAllBranch(): []*Branch
+        +AddBranch(branch: Branch)
+    }
+    
+    class Branch {
+        -id: string
+        -name: string
+        -address: string
+        -phone: string
+        -opened: bool
+        -atms: []*ATM
+        -employees: []*Employee
+        +GetID(): string
+        +GetAddress(): string
+        +GetPhone(): string
+        +IsOpen(): bool
+        +UpdatePhone(newPhone: string)
+        +SetOpen()
+        +SetClose()
+        +GetAllATM(): []*ATM
+        +GetAllEmployee(): []*Employee
+        +AddATM(atm: ATM)
+        +AddEmployee(employee: Employee)
+    }
+    
+    class ATM {
+        -id: string
+        -balance: float64
+        -branchID: string
+        +GetID(): string
+        +GetBalance(): float64
+        +GetBranchID(): string
+        +WithdrawMoney(money: float64): bool
+    }
+    
+    Person <|-- Client : extends
+    Person <|-- Employee : extends
+    
+    Entity <|.. Person : implements
+    Entity <|.. Branch : implements
+    Entity <|.. Bank : implements
+    Entity <|.. ATM : implements
+    Entity <|.. Transaction : implements
+    Entity <|.. Deposit : implements
+    Entity <|.. Loan : implements
+    
+    Bank *-- Branch 
+    Branch *-- ATM 
+    Branch *-- Employee 
+    Account *-- Card 
+    
+    Transaction ..> Account : references
+    Account ..> Client : belongs to
+    ATM ..> Branch : located in
+}
+
+@enduml

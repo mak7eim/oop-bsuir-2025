@@ -22,6 +22,11 @@ func (d *Deposit) GetID() string {
 	return d.id
 }
 
+func (d *Deposit) GetBalance() float64 {
+	return d.money
+}
+
 func (d *Deposit) CalculateInterest() float64 {
 	return d.money * d.rate / 100
 }
+
