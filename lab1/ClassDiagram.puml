@@ -62,7 +62,7 @@ class Loan {
   -money: float64
   -currency: string
   +GetID(): string
-  +GetClientID(): int
+  +GetClientID(): string
   +GetRemainingDebt(): float64
   +MakePayment(payment: float64)
 }
