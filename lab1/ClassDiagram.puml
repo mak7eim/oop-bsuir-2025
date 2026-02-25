@@ -121,18 +121,4 @@ class ATM {
 
 }
 
-
-domain.Bank "1" -- "1..*" domain.Branch
-domain.Bank "1" -- "0..*" domain.Client
-
-domain.Client "1" -- "0..*" domain.Account 
-domain.Client "1" -- "0..*" domain.Deposit
-domain.Client "1" -- "0..*" domain.Loan 
-
-domain.Account "1" -- "0..*" domain.Card 
-domain.Account "1" -- "0..*" domain.Transaction 
-
-domain.Branch "1" -- "0..*" domain.Employee 
-domain.Branch "1" -- "0..*" domain.ATM 
-
 @enduml
