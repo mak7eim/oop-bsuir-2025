@@ -11,7 +11,7 @@ func main() {
 	fmt.Printf("Создан банк: %s (ID: %s)\n", bank.GetName(), bank.GetID())
 
 	//создаем отделение банка
-	branch := domain.NewBranch("BR001", "ул. Ленина, 10", "+375298546688", "Главный офис")
+	branch := domain.NewBranch("BR001", "Главный офис", "ул. Ленина, 10", "+375298546688")
 	bank.AddBranch(branch)
 	fmt.Println("Добавлено отделение", branch.GetID(), "по адресу", branch.GetAddress())
 
@@ -84,8 +84,19 @@ func main() {
 	fmt.Printf("Проценты за период: %.2f %s\n", deposit.CalculateInterest(), "BYN")
 
 	//демонстрация работы с кредитом
-	loan := domain.NewLoan("L001", client.GetID(), "BYN", 300000.00, 12)
+	loan := domain.NewLoan("L001", client.GetID(), "BYN", 300000.00)
 	fmt.Printf("Выдан кредит на сумму %.2f %s\n", loan.GetRemainingDebt(), "BYN")
+
+	PrintBalance := func (product domain.FinancialProduct) {
+		fmt.Printf("Баланс: %.2f %s\n", product.GetBalance(), product.GetCurrency())
+	}
+
+	fmt.Print("Банковский счёт:")
+	PrintBalance(account)
+	fmt.Print("Кредит:")
+	PrintBalance(loan)
+	fmt.Print("Депозит:")
+	PrintBalance(deposit)
 
 	payment := 50000.00
 	loan.MakePayment(payment)

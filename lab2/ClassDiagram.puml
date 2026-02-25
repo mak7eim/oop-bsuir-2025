@@ -5,6 +5,11 @@ package domain {
     interface Entity {
         +GetID(): string
     }
+
+    interface FinancialProduct {
+        +GetBalance(): float64
+        +GetCurrency(): string
+    }
     
     class Person {
         -id: string
@@ -150,15 +155,16 @@ package domain {
     Entity <|.. Transaction : implements
     Entity <|.. Deposit : implements
     Entity <|.. Loan : implements
+
+    FinancialProduct <|.. Account : implements
+    FinancialProduct <|.. Loan : implements
+    FinancialProduct <|.. Deposit : implements
+
     
     Bank *-- Branch 
     Branch *-- ATM 
     Branch *-- Employee 
     Account *-- Card 
-    
-    Transaction ..> Account : references
-    Account ..> Client : belongs to
-    ATM ..> Branch : located in
 }
 
 @enduml

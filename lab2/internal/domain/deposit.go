@@ -22,8 +22,16 @@ func (d *Deposit) GetID() string {
 	return d.id
 }
 
+func (d *Deposit) GetClientID() string {
+	return d.clientID
+}
+
 func (d *Deposit) GetBalance() float64 {
 	return d.money
+}
+
+func (d *Deposit) GetCurrency() string {
+	return d.currency
 }
 
 func (d *Deposit) CalculateInterest() float64 {

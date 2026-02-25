@@ -10,7 +10,7 @@ type Branch struct {
 	employees []*Employee
 }
 
-func NewBranch(id, address, phone, name string) *Branch {
+func NewBranch(id, name, address, phone string) *Branch {
 	return &Branch{
 		id:      id,
 		name:    name,
@@ -24,6 +24,10 @@ func NewBranch(id, address, phone, name string) *Branch {
 
 func (b *Branch) GetID() string {
 	return b.id
+}
+
+func (b *Branch) GetName() string {
+	return b.name
 }
 
 func (b *Branch) GetAddress() string {
