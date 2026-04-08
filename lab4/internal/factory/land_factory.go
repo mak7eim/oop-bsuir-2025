@@ -54,8 +54,3 @@ func (f *LandFactory) CreateCargo(cargoType string, quantity int) (*domain.Cargo
 		Quantity:      quantity,
 	}, nil
 }
-
-type CargoInfo struct {
-	WeightPerKg float64
-	CostPerKg   float64
-}
