@@ -1,0 +1,211 @@
+basePath: /api/v1
+definitions:
+  responses.StatusResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  responses.SuccessResponse-weather_BatchCurrentWeather:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/weather.BatchCurrentWeather'
+      message:
+        type: string
+    type: object
+  responses.SuccessResponse-weather_CurrentWeather:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/weather.CurrentWeather'
+      message:
+        type: string
+    type: object
+  responses.SuccessResponse-weather_WeatherForecast:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/weather.WeatherForecast'
+      message:
+        type: string
+    type: object
+  weather.BatchCurrentWeather:
+    properties:
+      locations:
+        items:
+          $ref: '#/definitions/weather.LocationWeather'
+        type: array
+      provider:
+        type: string
+    type: object
+  weather.CurrentWeather:
+    properties:
+      location:
+        type: string
+      provider:
+        type: string
+      temperature:
+        type: number
+    type: object
+  weather.ForecastItem:
+    properties:
+      temperature:
+        type: number
+      time:
+        type: string
+    type: object
+  weather.LocationWeather:
+    properties:
+      error:
+        type: string
+      location:
+        type: string
+      temperature:
+        type: number
+    type: object
+  weather.WeatherForecast:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/weather.ForecastItem'
+        type: array
+      location:
+        type: string
+      provider:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Weather Example API
+  version: "1.0"
+paths:
+  /weather:
+    get:
+      description: Returns current weather for coordinates or a supported city
+      parameters:
+      - description: Latitude
+        in: query
+        name: lat
+        type: string
+      - description: Longitude
+        in: query
+        name: lon
+        type: string
+      - description: City name (Minsk, London, Tokyo, Shanghai, Warsaw)
+        in: query
+        name: city
+        type: string
+      - default: openweather
+        description: Weather provider
+        enum:
+        - openweather
+        - google
+        in: query
+        name: provider
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessResponse-weather_CurrentWeather'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.StatusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.StatusResponse'
+      summary: Get current weather
+      tags:
+      - weather
+  /weather/batch:
+    get:
+      description: Returns current temperature for several supported cities
+      parameters:
+      - description: Comma-separated city names
+        in: query
+        name: cities
+        required: true
+        type: string
+      - default: openweather
+        description: Weather provider
+        enum:
+        - openweather
+        - google
+        in: query
+        name: provider
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessResponse-weather_BatchCurrentWeather'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.StatusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.StatusResponse'
+      summary: Get current weather for multiple cities
+      tags:
+      - weather
+  /weather/forecast:
+    get:
+      description: Returns weather forecast for coordinates or a supported city
+      parameters:
+      - description: Latitude
+        in: query
+        name: lat
+        type: string
+      - description: Longitude
+        in: query
+        name: lon
+        type: string
+      - description: City name (Minsk, London, Tokyo, Shanghai, Warsaw)
+        in: query
+        name: city
+        type: string
+      - default: 24
+        description: Forecast horizon in hours
+        in: query
+        name: hours
+        type: integer
+      - default: openweather
+        description: Weather provider
+        enum:
+        - openweather
+        - google
+        in: query
+        name: provider
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessResponse-weather_WeatherForecast'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.StatusResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.StatusResponse'
+      summary: Get weather forecast
+      tags:
+      - weather
+swagger: "2.0"
