@@ -1,0 +1,485 @@
+basePath: /
+definitions:
+  lab7-oop_models_dto.AddToCartRequest:
+    properties:
+      dish_id:
+        type: integer
+      quantity:
+        minimum: 1
+        type: integer
+    required:
+    - dish_id
+    - quantity
+    type: object
+  lab7-oop_models_dto.AssignCourierRequest:
+    properties:
+      auto:
+        type: boolean
+      courier_id:
+        type: integer
+    type: object
+  lab7-oop_models_dto.AuthResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/lab7-oop_models_dto.UserResponse'
+    type: object
+  lab7-oop_models_dto.CreateOrderRequest:
+    properties:
+      address:
+        type: string
+    required:
+    - address
+    type: object
+  lab7-oop_models_dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  lab7-oop_models_dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/models.Role'
+        enum:
+        - customer
+        - admin
+        - courier
+    required:
+    - email
+    - password
+    - role
+    type: object
+  lab7-oop_models_dto.UpdateOrderStatusRequest:
+    properties:
+      status:
+        $ref: '#/definitions/models.OrderStatus'
+    required:
+    - status
+    type: object
+  lab7-oop_models_dto.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      role:
+        $ref: '#/definitions/models.Role'
+    type: object
+  lab7-oop_shared_errors.AppError:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  lab7-oop_shared_response.Envelope:
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/lab7-oop_shared_errors.AppError'
+    type: object
+  models.OrderStatus:
+    enum:
+    - accepted
+    - preparing
+    - on_the_way
+    - delivered
+    type: string
+    x-enum-varnames:
+    - OrderStatusAccepted
+    - OrderStatusPreparing
+    - OrderStatusOnTheWay
+    - OrderStatusDelivered
+  models.Role:
+    enum:
+    - customer
+    - admin
+    - courier
+    type: string
+    x-enum-varnames:
+    - RoleCustomer
+    - RoleAdmin
+    - RoleCourier
+host: localhost:8080
+info:
+  contact: {}
+  description: Backend for food delivery system (Clean Architecture lab).
+  title: Food Delivery API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/lab7-oop_models_dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/lab7-oop_models_dto.AuthResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      summary: Login
+      tags:
+      - auth
+  /auth/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/lab7-oop_models_dto.UserResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registration data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/lab7-oop_models_dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+            - properties:
+                data:
+                  $ref: '#/definitions/lab7-oop_models_dto.AuthResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      summary: Register a new user
+      tags:
+      - auth
+  /cart:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Get current user's cart
+      tags:
+      - cart
+  /cart/items:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Item
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/lab7-oop_models_dto.AddToCartRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Add dish to cart
+      tags:
+      - cart
+  /cart/items/{dishId}:
+    delete:
+      parameters:
+      - description: Dish ID
+        in: path
+        name: dishId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Remove dish from cart
+      tags:
+      - cart
+  /couriers:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: List couriers
+      tags:
+      - couriers
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - system
+  /orders:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: List orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/lab7-oop_models_dto.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Create order from cart
+      tags:
+      - orders
+  /orders/{id}:
+    get:
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Get order by ID
+      tags:
+      - orders
+  /orders/{id}/advance:
+    post:
+      description: accepted -> preparing -> on_the_way -> delivered
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Advance order to next status
+      tags:
+      - orders
+  /orders/{id}/courier:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Assignment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/lab7-oop_models_dto.AssignCourierRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Assign courier to order (admin)
+      tags:
+      - orders
+  /orders/{id}/status:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Status
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/lab7-oop_models_dto.UpdateOrderStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      security:
+      - BearerAuth: []
+      summary: Set order status (admin)
+      tags:
+      - orders
+  /restaurants:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      summary: List restaurants
+      tags:
+      - menu
+  /restaurants/{id}:
+    get:
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      summary: Get restaurant by ID
+      tags:
+      - menu
+  /restaurants/{id}/dishes:
+    get:
+      parameters:
+      - description: Restaurant ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/lab7-oop_shared_response.Envelope'
+      summary: List dishes of a restaurant
+      tags:
+      - menu
+securityDefinitions:
+  BearerAuth:
+    description: 'JWT token. Format: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
